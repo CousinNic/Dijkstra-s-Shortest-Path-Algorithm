@@ -6,7 +6,7 @@ import java.util.*;
  * @author Nic Drummey
  * Date: 2-15-2022
  */
-public class main {
+public class Part1 {
 
 	private PriorityQueue<Node> queue;
 	private int cost[];
@@ -17,7 +17,7 @@ public class main {
 	 * 
 	 * @param totalNodes
 	 */
-	public main(int totalNodes) {
+	public Part1(int totalNodes) {
 		queue = new PriorityQueue<Node>(totalNodes, new Node());
 		cost = new int[totalNodes];
 		HS = new HashSet<Integer>();
@@ -52,7 +52,7 @@ public class main {
 		conn.get(4).add(new Node(3, 2));
 
 		int target = 0;
-		main dpq = new main(conn.size());
+		Part1 dpq = new Part1(conn.size());
 		dpq.dijkstraAlgorithm(conn, target);
 
 		// prints origional and sort
@@ -126,7 +126,7 @@ public class main {
 	 * @param I
 	 * @param target
 	 */
-	public static void printShortestDistances(main I, int target) {
+	public static void printShortestDistances(Part1 I, int target) {
 		System.out.println("shortest paths from node " + target + ":");
 		for (int i = 0; i < I.cost.length; i++)
 			System.out.println("Shortest path distance to Node " + i + " is " + I.cost[i]);
