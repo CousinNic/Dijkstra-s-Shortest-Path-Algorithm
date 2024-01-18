@@ -3,8 +3,7 @@ import java.util.*;
 /**
  * A program to test Djkstra's shortest path algorithm
  * 
- * @author Nic Drummey
- * Date: 2-15-2022
+ * @author Nic Drummey Date: 2-15-2022
  */
 public class ShortestPath {
 
@@ -25,39 +24,55 @@ public class ShortestPath {
 	}
 
 	/**
-	 * main method to set the graph
+	 * main method to build a graph node relations can be changed freely
 	 * 
 	 * @param arg
 	 */
 	public static void main(String arg[]) {
 
-		List<List<Node>> conn = new ArrayList<List<Node>>();
+		List<List<Node>> graph = new ArrayList<List<Node>>();
 
-		for (int i = 0; i < 6; i++) {
-			List<Node> T = new ArrayList<Node>();
-			conn.add(T);
+		// values can be changed
+		// freely********************************************************************
+		int targetNodeToSearch = 0; // alters the target node to perform the algorithm
+		int totalNodes = 5; // changes the amount of nodes, (don't forget to add relations between nodes.)
+		// ************************************************************************************************
+
+		// checks for valid target node
+		if (targetNodeToSearch > totalNodes) {
+			System.out.printf("Node must exist! keep in mind nodes range from 0 to %d\n", graph.size() - 1);
+			return;
 		}
-		// fills graph
-		conn.get(0).add(new Node(1, 2));
-		conn.get(0).add(new Node(2, 4));
 
-		conn.get(1).add(new Node(2, 1));
-		conn.get(1).add(new Node(3, 7));
+		for (int i = 0; i <= totalNodes; i++) {
+			List<Node> T = new ArrayList<Node>();
+			graph.add(T);
+		}
 
-		conn.get(2).add(new Node(4, 3));
+		// fills graph (nodes and relations can be changed and added
+		// freely)****************************
+		graph.get(0).add(new Node(1, 2));
+		graph.get(0).add(new Node(2, 4));
 
-		conn.get(3).add(new Node(5, 1));
+		graph.get(1).add(new Node(2, 1));
+		graph.get(1).add(new Node(3, 7));
 
-		conn.get(4).add(new Node(5, 5));
-		conn.get(4).add(new Node(3, 2));
+		graph.get(2).add(new Node(4, 3));
+		graph.get(2).add(new Node(0, 4));
 
-		int target = 0;
-		ShortestPath dpq = new ShortestPath(conn.size());
-		dpq.dijkstraAlgorithm(conn, target);
+		graph.get(3).add(new Node(5, 1));
+
+		graph.get(4).add(new Node(5, 5));
+		graph.get(4).add(new Node(3, 2));
+		// ***********************************************************************************************
+		// note these paths are one way, so just because 1 can reach 2, does not mean 2
+
+		ShortestPath dpq = new ShortestPath(graph.size());
+		dpq.dijkstraAlgorithm(graph, targetNodeToSearch);
 
 		// prints origional and sort
 		printGraph();
-		printShortestDistances(dpq, target);
+		printShortestDistances(dpq, targetNodeToSearch);
 	}
 
 	/**
@@ -97,17 +112,17 @@ public class ShortestPath {
 	 * 
 	 * @param u
 	 */
-	private void neighbours(int N) {
+	private void neighbours(int n) {
 
 		int edgeCost;
 		int newCost;
 
-		for (int i = 0; i < adjacentNodes.get(N).size(); i++) {
-			Node t = adjacentNodes.get(N).get(i);
+		for (int i = 0; i < adjacentNodes.get(n).size(); i++) {
+			Node t = adjacentNodes.get(n).get(i);
 			// makes sure node is not in HashSet and sets values
 			if (!HS.contains(t.node)) {
 				edgeCost = t.cost;
-				newCost = cost[N] + edgeCost;
+				newCost = cost[n] + edgeCost;
 
 				// checks that the cost of the node is greater than the cost
 				// of the total calculated distance from the start node, if yes updated values
@@ -120,20 +135,30 @@ public class ShortestPath {
 	}
 
 	/**
-	 * method to print the the shortest calculated path of a the graph given the
-	 * target to reach
+	 * method to print the the shortest calculated path to each node the in the
+	 * graph given the target node
 	 * 
 	 * @param I
 	 * @param target
 	 */
 	public static void printShortestDistances(ShortestPath I, int target) {
 		System.out.println("shortest paths from node " + target + ":");
-		for (int i = 0; i < I.cost.length; i++)
-			System.out.println("Shortest path distance to Node " + i + " is " + I.cost[i]);
+		int cost;
+		// cycles through nodes
+		for (int i = 0; i < I.cost.length; i++) {
+			cost = I.cost[i];
+			// checks if a path was found, then prints accordingly
+			if (cost != 2147483647) {
+				System.out.println("Shortest path distance to Node " + i + " is " + cost);
+			} else {
+				System.out.println("There is not path to Node " + i);
+			}
+
+		}
 	}
 
 	/**
-	 * method to print out the origional graph
+	 * method to print original graph
 	 */
 	public static void printGraph() {
 		for (int i = 0; i < adjacentNodes.size(); i++) {
@@ -153,10 +178,9 @@ public class ShortestPath {
 }
 
 /**
- * class to represent each node, with the distance to reach it
+ * class representing each node, including the distance to reach it
  * 
- * @author Nic Drummey
- *
+ * @author Nic Drummey Date: 2-15-2022
  */
 class Node implements Comparator<Node> {
 
@@ -164,7 +188,7 @@ class Node implements Comparator<Node> {
 	public int cost;
 
 	/**
-	 * constructor to initialize 
+	 * constructor to initialize node
 	 */
 	public Node() {
 	}
@@ -178,7 +202,7 @@ class Node implements Comparator<Node> {
 	}
 
 	/**
-	 * simple compare function
+	 * simple compare method
 	 */
 	@Override
 	public int compare(Node n1, Node n2) {
